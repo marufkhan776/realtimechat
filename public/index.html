@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RealTime Media Chat</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Welcome Screen -->
+    <div id="welcome-screen" class="screen active">
+        <div class="welcome-container">
+            <div class="logo">
+                <i class="fas fa-play-circle"></i>
+                <h1>MediaSync Chat</h1>
+            </div>
+            <div class="welcome-form">
+                <input type="text" id="username-input" placeholder="Enter your username" maxlength="20">
+                <button id="join-app-btn" class="btn-primary">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Join App
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Room Selection Screen -->
+    <div id="room-screen" class="screen">
+        <div class="room-container">
+            <div class="room-header">
+                <h2>Welcome, <span id="user-display-name"></span>!</h2>
+                <button id="logout-btn" class="btn-secondary">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
+            </div>
+            
+            <div class="room-options">
+                <div class="create-room-section">
+                    <h3>Create New Room</h3>
+                    <div class="room-size-options">
+                        <button class="room-size-btn" data-size="2">
+                            <i class="fas fa-users"></i>
+                            2 People
+                        </button>
+                        <button class="room-size-btn" data-size="4">
+                            <i class="fas fa-users"></i>
+                            4 People
+                        </button>
+                        <button class="room-size-btn" data-size="6">
+                            <i class="fas fa-users"></i>
+                            6 People
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="join-room-section">
+                    <h3>Join Existing Room</h3>
+                    <div class="join-room-form">
+                        <input type="text" id="room-id-input" placeholder="Enter Room ID" maxlength="6">
+                        <button id="join-room-btn" class="btn-primary">
+                            <i class="fas fa-door-open"></i>
+                            Join Room
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Chat Screen -->
+    <div id="chat-screen" class="screen">
+        <div class="chat-container">
+            <!-- Header -->
+            <div class="chat-header">
+                <div class="room-info">
+                    <h3>Room: <span id="current-room-id"></span></h3>
+                    <div class="admin-badge" id="admin-badge" style="display: none;">
+                        <i class="fas fa-crown"></i> Admin
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <button id="room-settings-btn" class="btn-icon" title="Room Settings">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    <button id="leave-room-btn" class="btn-icon" title="Leave Room">
+                        <i class="fas fa-door-open"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Media Player Section -->
+                <div class="media-section">
+                    <div class="media-header">
+                        <h4>Media Player</h4>
+                        <div class="media-controls" id="admin-controls" style="display: none;">
+                            <button id="youtube-btn" class="btn-secondary">
+                                <i class="fab fa-youtube"></i>
+                                YouTube
+                            </button>
+                            <button id="local-file-btn" class="btn-secondary">
+                                <i class="fas fa-file-video"></i>
+                                Local File
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- YouTube Player -->
+                    <div id="youtube-player-container" class="media-player" style="display: none;">
+                        <div id="youtube-url-input-container">
+                            <input type="text" id="youtube-url-input" placeholder="Paste YouTube URL here...">
+                            <button id="load-youtube-btn" class="btn-primary">Load</button>
+                        </div>
+                        <div id="youtube-player"></div>
+                    </div>
+                    
+                    <!-- Local Media Player -->
+                    <div id="local-player-container" class="media-player" style="display: none;">
+                        <input type="file" id="local-file-input" accept="video/*,audio/*" style="display: none;">
+                        <div id="file-select-area" class="file-drop-area">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click to select a video or audio file</p>
+                        </div>
+                        <video id="local-video-player" controls style="display: none;"></video>
+                        <audio id="local-audio-player" controls style="display: none;"></audio>
+                    </div>
+
+                    <!-- No Media State -->
+                    <div id="no-media-state" class="no-media">
+                        <i class="fas fa-play-circle"></i>
+                        <p>No media playing</p>
+                        <small>Admin can load YouTube videos or local files</small>
+                    </div>
+                </div>
+
+                <!-- Chat Section -->
+                <div class="chat-section">
+                    <div class="chat-messages" id="chat-messages">
+                        <!-- Messages will be dynamically added here -->
+                    </div>
+                    
+                    <div class="chat-input-container">
+                        <div class="chat-input-wrapper">
+                            <button id="emoji-btn" class="btn-icon">
+                                <i class="fas fa-smile"></i>
+                            </button>
+                            <input type="text" id="message-input" placeholder="Type a message..." maxlength="500">
+                            <input type="file" id="image-input" accept="image/*" style="display: none;">
+                            <button id="image-btn" class="btn-icon">
+                                <i class="fas fa-image"></i>
+                            </button>
+                            <button id="send-btn" class="btn-icon">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users Sidebar -->
+            <div class="users-sidebar">
+                <div class="users-header">
+                    <h4>Members</h4>
+                    <span id="user-count">0</span>
+                </div>
+                <div class="users-list" id="users-list">
+                    <!-- Users will be dynamically added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Emoji Picker Modal -->
+    <div id="emoji-modal" class="modal">
+        <div class="modal-content emoji-picker">
+            <div class="modal-header">
+                <h4>Select Emoji</h4>
+                <span class="close">&times;</span>
+            </div>
+            <div class="emoji-grid">
+                <!-- Emojis will be dynamically added here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Room Settings Modal -->
+    <div id="room-settings-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>Room Settings</h4>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="setting-item">
+                    <label>Room ID:</label>
+                    <div class="room-id-display">
+                        <span id="room-id-display"></span>
+                        <button id="copy-room-id" class="btn-secondary">
+                            <i class="fas fa-copy"></i>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="setting-item" id="join-requests-section" style="display: none;">
+                    <label>Join Requests:</label>
+                    <div id="join-requests-list">
+                        <!-- Join requests will be dynamically added here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container"></div>
+
+    <!-- Scripts -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="script.js"></script>
+</body>
+</html>
